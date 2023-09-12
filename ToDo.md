@@ -26,4 +26,4 @@ Q:
 
 Q:
 
--[ ] What language and libs will we use for frontend
+- [ ] What language and libs will we use for frontend
