@@ -8,92 +8,94 @@
 #include <ble/ble_config.hh>
 
 class MyServerCallbacks : public BLEServerCallbacks {
-  bool deviceConnected;
+    bool deviceConnected;
 
-  void onConnect(BLEServer* pServer) { deviceConnected = true; }
+    void onConnect(BLEServer* pServer) { deviceConnected = true; }
 
-  void onDisconnect(BLEServer* pServer) {
-    deviceConnected = false;
-    reconnect(pServer);
-  }
-
-  void reconnect(BLEServer* pServer) {
-    while (!deviceConnected) {
-      pServer->getAdvertising()->start();
-      delay(100);
+    void onDisconnect(BLEServer* pServer) {
+        deviceConnected = false;
+        reconnect(pServer);
     }
-  }
+
+    void reconnect(BLEServer* pServer) {
+        while (!deviceConnected) {
+            pServer->getAdvertising()->start();
+            delay(100);
+        }
+    }
 };
 
 class BLEServiceHandler {
- public:
-  BLEServiceHandler() {
-    pServer = nullptr;
-    pDataCharacteristic = nullptr;
-    pSizeCharacteristic = nullptr;
-    pPackageCharacteristic = nullptr;
-  }
+   public:
+    BLEServiceHandler() {
+        pServer = nullptr;
+        pDataCharacteristic = nullptr;
+        pSizeCharacteristic = nullptr;
+        pPackageCharacteristic = nullptr;
+    }
 
-  void setup() {
-    BLEDevice::init("ESP32");
-    pServer = BLEDevice::createServer();
-    BLEService* pService = pServer->createService(SERVICE_UUID);
+    void setup() {
+        BLEDevice::init("ESP32");
+        pServer = BLEDevice::createServer();
+        BLEService* pService = pServer->createService(SERVICE_UUID);
 
-    BLEDescriptor dataDescriptor(BLEUUID((uint16_t)0x2902));
-    BLEDescriptor sizeDescriptor(BLEUUID((uint16_t)0x2902));
-    BLEDescriptor packDescriptor(BLEUUID((uint16_t)0x2902));
+        BLEDescriptor dataDescriptor(BLEUUID((uint16_t)0x2902));
+        BLEDescriptor sizeDescriptor(BLEUUID((uint16_t)0x2902));
+        BLEDescriptor packDescriptor(BLEUUID((uint16_t)0x2902));
 
-    pDataCharacteristic = pService->createCharacteristic(
-        DATA_UUID, BLECharacteristic::PROPERTY_READ |
-                       BLECharacteristic::PROPERTY_WRITE |
-                       BLECharacteristic::PROPERTY_INDICATE);
+        pDataCharacteristic = pService->createCharacteristic(
+            DATA_UUID, BLECharacteristic::PROPERTY_READ |
+                           BLECharacteristic::PROPERTY_WRITE |
+                           BLECharacteristic::PROPERTY_INDICATE);
 
-    pSizeCharacteristic = pService->createCharacteristic(
-        SIZE_UUID, BLECharacteristic::PROPERTY_READ |
-                       BLECharacteristic::PROPERTY_WRITE |
-                       BLECharacteristic::PROPERTY_INDICATE);
+        pSizeCharacteristic = pService->createCharacteristic(
+            SIZE_UUID, BLECharacteristic::PROPERTY_READ |
+                           BLECharacteristic::PROPERTY_WRITE |
+                           BLECharacteristic::PROPERTY_INDICATE);
 
-    pPackageCharacteristic = pService->createCharacteristic(
-        PACKAGE_UUID, BLECharacteristic::PROPERTY_READ |
-                          BLECharacteristic::PROPERTY_WRITE |
-                          BLECharacteristic::PROPERTY_INDICATE);
+        pPackageCharacteristic = pService->createCharacteristic(
+            PACKAGE_UUID, BLECharacteristic::PROPERTY_READ |
+                              BLECharacteristic::PROPERTY_WRITE |
+                              BLECharacteristic::PROPERTY_INDICATE);
 
-    pDataCharacteristic->addDescriptor(&dataDescriptor);
-    pSizeCharacteristic->addDescriptor(&sizeDescriptor);
-    pPackageCharacteristic->addDescriptor(&packDescriptor);
+        pDataCharacteristic->addDescriptor(&dataDescriptor);
+        pSizeCharacteristic->addDescriptor(&sizeDescriptor);
+        pPackageCharacteristic->addDescriptor(&packDescriptor);
 
-    pService->start();
+        pService->start();
 
-    // Could be added later
-    // BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
-    // pAdvertising->addServiceUUID(SERVICE_UUID);
-    // pAdvertising->setScanResponse(true);
-    // pAdvertising->setMinPreferred(0x06);
-    BLEDevice::startAdvertising();
-  }
+        // Could be added later
+        // BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+        // pAdvertising->addServiceUUID(SERVICE_UUID);
+        // pAdvertising->setScanResponse(true);
+        // pAdvertising->setMinPreferred(0x06);
+        BLEDevice::startAdvertising();
+    }
 
-  void bcastIndicate() {
-    pDataCharacteristic->indicate();
-    pSizeCharacteristic->indicate();
-    pPackageCharacteristic->indicate();
-  }
+    void bcastIndicate() {
+        pDataCharacteristic->indicate();
+        pSizeCharacteristic->indicate();
+        pPackageCharacteristic->indicate();
+    }
 
-  void setSize(uint16_t size) { pSizeCharacteristic->setValue(size); }
+    void setSize(uint16_t size) { pSizeCharacteristic->setValue(size); }
 
-  void setNumber(uint16_t number) { pPackageCharacteristic->setValue(number); }
+    void setNumber(uint16_t number) {
+        pPackageCharacteristic->setValue(number);
+    }
 
-  void setData(uint16_t* data) {
-    if (data == nullptr)
-      return;
-    pDataCharacteristic->setValue(reinterpret_cast<uint8_t*>(data),
-                                  MAX_DATA_SIZE * sizeof(uint16_t));
-  }
+    void setData(uint16_t* data) {
+        if (data == nullptr)
+            return;
+        pDataCharacteristic->setValue(reinterpret_cast<uint8_t*>(data),
+                                      MAX_DATA_SIZE * sizeof(uint16_t));
+    }
 
- private:
-  BLEServer* pServer;
-  BLECharacteristic* pDataCharacteristic;
-  BLECharacteristic* pSizeCharacteristic;
-  BLECharacteristic* pPackageCharacteristic;
+   private:
+    BLEServer* pServer;
+    BLECharacteristic* pDataCharacteristic;
+    BLECharacteristic* pSizeCharacteristic;
+    BLECharacteristic* pPackageCharacteristic;
 };
 
 #endif  // BLE_SERVICE_HANDLER_H
