@@ -2,9 +2,9 @@
 #define PACKAGE_FORMAT
 
 struct PackageFormat {
-    const unsigned char HEADER = 0;
-    const unsigned char TRAILER = 0;
-    const unsigned char DELIMETER = ',';
+  const unsigned char HEADER = 0;
+  const unsigned char TRAILER = 0;
+  const unsigned char DELIMETER = ',';
 };
 
-#endif // PACKAGE_FORMAT
+#endif  // PACKAGE_FORMAT

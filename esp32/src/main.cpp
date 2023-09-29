@@ -12,7 +12,7 @@ void setup() {
   pack = SingletonePackage::getInstance();
 }
 
-void loop() { 
+void loop() {
   pack->setNumber(num++);
   for (int i = 0; i < MAX_DATA_SIZE; i++) {
     pack->addData(random(0, 4096));
