@@ -1,5 +1,5 @@
-#ifndef PACKAGE_FORMAT
-#define PACKAGE_FORMAT
+#ifndef PACKAGE_FORMAT_H
+#define PACKAGE_FORMAT_H
 
 struct PackageFormat {
     const unsigned char HEADER = 0;
@@ -7,4 +7,4 @@ struct PackageFormat {
     const unsigned char DELIMETER = ',';
 };
 
-#endif  // PACKAGE_FORMAT
+#endif  // PACKAGE_FORMAT_H

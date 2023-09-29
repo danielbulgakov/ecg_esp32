@@ -1,5 +1,5 @@
-#ifndef DATA_PACKAGE
-#define DATA_PACKAGE
+#ifndef DATA_PACKAGE_H
+#define DATA_PACKAGE_H
 
 #include <stdint.h>
 #include <vector>
@@ -62,4 +62,4 @@ class SingletonPackage : public DataPackage {
 
 SingletonPackage* SingletonPackage::instance = nullptr;
 
-#endif  // DATA_PACKAGE
+#endif  // DATA_PACKAGE_H

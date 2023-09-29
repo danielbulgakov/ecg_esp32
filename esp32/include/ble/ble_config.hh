@@ -1,3 +1,6 @@
+#ifndef BLE_CONFIG_H
+#define BLE_CONFIG_H
+
 // Unique service UUID
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 
@@ -8,3 +11,5 @@
 
 // Maximum data size
 #define MAX_DATA_SIZE 20
+
+#endif  // BLE_CONFIG_H
