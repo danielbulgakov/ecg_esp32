@@ -4,16 +4,19 @@
 #include "message/data_package.hh"
 
 BLEServiceHandler bleHandler;
-SingletonePackage* pack;
+SingletonPackage* pack;
 uint16_t num = 0;
 
 void setup() {
   bleHandler.setup();
-  pack = SingletonePackage::getInstance();
+  pack = SingletonPackage::getInstance();
 }
 
 void loop() {
   pack->setNumber(num++);
+
+  if (pack->getSize() > 20) pack->clear();
+
   for (int i = 0; i < MAX_DATA_SIZE; i++) {
     pack->addData(random(0, 4096));
   }
@@ -22,8 +25,7 @@ void loop() {
   bleHandler.setNumber(pack->getNumber());
   bleHandler.setSize(pack->getSize());
 
-  bleHandler.bcastNotify();
-  pack->clear();
+  bleHandler.bcastIndicate();
 
   delay(1000);
 }

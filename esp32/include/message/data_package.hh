@@ -4,19 +4,20 @@
 #include <stdint.h>
 #include <vector>
 
-#include "package_format.hh"
+#include "message/package_format.hh"
 
 typedef uint16_t DataType;
 
 class DataPackage {
  private:
   PackageFormat format;
-  uint16_t size;
+  uint16_t maxSize;
   uint16_t number;
   std::vector<DataType> payload;
 
  public:
-  DataPackage(uint16_t number = 0) : number(number) {}
+  explicit DataPackage(uint16_t number = 0, uint16_t maxSize = 20) \
+                                    : number(number), maxSize(maxSize) {}
 
   void addData(DataType value) {
     if (!isPayloadFull()) {
@@ -24,39 +25,37 @@ class DataPackage {
     }
   }
 
-  bool isPayloadFull() const { return payload.size() >= size; }
+  bool isPayloadFull() const { return payload.size() >= maxSize; }
 
   uint16_t* getData() { return payload.data(); }
 
   uint16_t getSize() {
-    size = (uint16_t)payload.size();
-    return size;
+    return (uint16_t)payload.size();
   }
 
   uint16_t getNumber() { return number; }
 
   void clear() {
     payload.clear();
-    size = 0;
     number = 0;
   }
 
   void setNumber(uint16_t number) { this->number = number; }
 };
 
-class SingletonePackage : public DataPackage {
+class SingletonPackage : public DataPackage {
  private:
-  static SingletonePackage* instance;
+  static SingletonPackage* instance;
 
-  SingletonePackage() : DataPackage() {}
+  SingletonPackage() : DataPackage() {}
 
-  SingletonePackage(const SingletonePackage&) = delete;
-  SingletonePackage& operator=(const SingletonePackage&) = delete;
+  SingletonPackage(const SingletonPackage&) = delete;
+  SingletonPackage& operator=(const SingletonPackage&) = delete;
 
  public:
-  static SingletonePackage* getInstance() {
+  static SingletonPackage* getInstance() {
     if (!instance) {
-      instance = new SingletonePackage();
+      instance = new SingletonPackage();
     }
     return instance;
   }
@@ -64,6 +63,6 @@ class SingletonePackage : public DataPackage {
 
 // Define static members of classes
 
-SingletonePackage* SingletonePackage::instance = nullptr;
+SingletonPackage* SingletonPackage::instance = nullptr;
 
 #endif  // DATA_PACKAGE

@@ -27,33 +27,40 @@ class MyServerCallbacks : public BLEServerCallbacks {
 
 class BLEServiceHandler {
  public:
-  BLEServiceHandler() {}
+  BLEServiceHandler() {
+    pServer = nullptr;
+    pDataCharacteristic = nullptr;
+    pSizeCharacteristic = nullptr;
+    pPackageCharacteristic = nullptr;
+  }
 
   void setup() {
     BLEDevice::init("ESP32");
     pServer = BLEDevice::createServer();
     BLEService* pService = pServer->createService(SERVICE_UUID);
 
-    BLEDescriptor notifyDescriptor(BLEUUID((uint16_t)0x2907));
+    BLEDescriptor dataDescriptor(BLEUUID((uint16_t)0x2902));
+    BLEDescriptor sizeDescriptor(BLEUUID((uint16_t)0x2902));
+    BLEDescriptor packDescriptor(BLEUUID((uint16_t)0x2902));
 
     pDataCharacteristic = pService->createCharacteristic(
         DATA_UUID, BLECharacteristic::PROPERTY_READ |
                        BLECharacteristic::PROPERTY_WRITE |
-                       BLECharacteristic::PROPERTY_NOTIFY);
+                       BLECharacteristic::PROPERTY_INDICATE);
 
     pSizeCharacteristic = pService->createCharacteristic(
         SIZE_UUID, BLECharacteristic::PROPERTY_READ |
                        BLECharacteristic::PROPERTY_WRITE |
-                       BLECharacteristic::PROPERTY_NOTIFY);
+                       BLECharacteristic::PROPERTY_INDICATE);
 
     pPackageCharacteristic = pService->createCharacteristic(
         PACKAGE_UUID, BLECharacteristic::PROPERTY_READ |
                           BLECharacteristic::PROPERTY_WRITE |
-                          BLECharacteristic::PROPERTY_NOTIFY);
+                          BLECharacteristic::PROPERTY_INDICATE);
 
-    pDataCharacteristic->addDescriptor(&notifyDescriptor);
-    pSizeCharacteristic->addDescriptor(&notifyDescriptor);
-    pPackageCharacteristic->addDescriptor(&notifyDescriptor);
+    pDataCharacteristic->addDescriptor(&dataDescriptor);
+    pSizeCharacteristic->addDescriptor(&sizeDescriptor);
+    pPackageCharacteristic->addDescriptor(&packDescriptor);
 
     pService->start();
 
@@ -65,10 +72,10 @@ class BLEServiceHandler {
     BLEDevice::startAdvertising();
   }
 
-  void bcastNotify() {
-    pDataCharacteristic->notify();
-    pSizeCharacteristic->notify();
-    pPackageCharacteristic->notify();
+  void bcastIndicate() {
+    pDataCharacteristic->indicate();
+    pSizeCharacteristic->indicate();
+    pPackageCharacteristic->indicate();
   }
 
   void setSize(uint16_t size) { pSizeCharacteristic->setValue(size); }
@@ -78,7 +85,7 @@ class BLEServiceHandler {
   void setData(uint16_t* data) {
     if (data == nullptr)
       return;
-    pDataCharacteristic->setValue((uint8_t*)data,
+    pDataCharacteristic->setValue(reinterpret_cast<uint8_t*>(data),
                                   MAX_DATA_SIZE * sizeof(uint16_t));
   }
 
