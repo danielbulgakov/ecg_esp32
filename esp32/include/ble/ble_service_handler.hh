@@ -6,18 +6,24 @@
 #include <BLEUtils.h>
 
 #include <ble/ble_config.hh>
+#include <data_manager.hh>
 
 class MyServerCallbacks : public BLEServerCallbacks {
     bool deviceConnected;
 
-    void onConnect(BLEServer* pServer) { deviceConnected = true; }
+    void onConnect(BLEServer* pServer) {
+        deviceConnected = true;
+        DataManager::deviceIsConnected();
+    }
 
     void onDisconnect(BLEServer* pServer) {
         deviceConnected = false;
+        DataManager::deviceIsDisconnected();
         reconnect(pServer);
     }
 
     void reconnect(BLEServer* pServer) {
+        // reconnect endlessly
         while (!deviceConnected) {
             pServer->getAdvertising()->start();
             delay(100);
@@ -26,6 +32,12 @@ class MyServerCallbacks : public BLEServerCallbacks {
 };
 
 class BLEServiceHandler {
+   private:
+    BLEServer* pServer;
+    BLECharacteristic* pDataCharacteristic;
+    BLECharacteristic* pSizeCharacteristic;
+    BLECharacteristic* pPackageCharacteristic;
+
    public:
     BLEServiceHandler() {
         pServer = nullptr;
@@ -90,12 +102,6 @@ class BLEServiceHandler {
         pDataCharacteristic->setValue(reinterpret_cast<uint8_t*>(data),
                                       MAX_DATA_SIZE * sizeof(uint16_t));
     }
-
-   private:
-    BLEServer* pServer;
-    BLECharacteristic* pDataCharacteristic;
-    BLECharacteristic* pSizeCharacteristic;
-    BLECharacteristic* pPackageCharacteristic;
 };
 
 #endif  // BLE_SERVICE_HANDLER_H

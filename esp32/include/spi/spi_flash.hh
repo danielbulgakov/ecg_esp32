@@ -5,13 +5,26 @@
 #include "SPI.h"
 #include "SPIFFS.h"
 
+#include "spi/spi_config.hh"
+
 class SPIFlash {
+   private:
+    static SPIFlash* instance;
+    SPIFlash();
+    SPIFlash(const SPIFlash&) = delete;
+    SPIFlash& operator=(const SPIFlash&) = delete;
+
    public:
-    SPIFlash(int sclk, int miso, int mosi, int cs)
-        : sclk(sclk), miso(miso), mosi(mosi), cs(cs) {}
+    static SPIFlash* getInstance() {
+        if (!instance) {
+            instance = new SPIFlash();
+        }
+        return instance;
+    }
 
     void begin() {
-        SPI.begin(sclk, miso, mosi, cs);
+        // pins got from spi_config file
+        SPI.begin(SCLK, MISO, MOSI, CS);
         if (!SPIFFS.begin(true)) {
             Serial.println("An error has occurred while mounting SPIFFS");
         }
@@ -49,8 +62,11 @@ class SPIFlash {
         file.close();
     }
 
-   private:
-    int sclk, miso, mosi, cs;
+
 };
+
+// Define static members of classes
+
+SPIFlash* SPIFlash::instance = nullptr;
 
 #endif  // SPI_FLASH_H
