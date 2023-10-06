@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <title>Web Bluetooth API</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <h1>Web Bluetooth API</h1>
+
+    <button id="find">Find Device</button>
+    <button id="start" disabled>Read data</button>
+    <button id="stop" disabled>Stop read</button>
+
+    <p>Currently selected bluetooth device: <strong id="device-name"></strong></p>
+    <div id="outputX" style="margin-bottom: 20px;"></div>
+    <div id="outputY" style="margin-bottom: 20px;"></div>
+    <div id="outputData" style="margin-bottom: 20px;"></div>
+    <div id="outputSize" style="margin-bottom: 20px;"></div>
+    <div id="outputPackage" style="margin-bottom: 20px;"></div>
+
+    <!-- Popup (device list) -->
+    <div class="devices">
+      <div class="devices__wrapper">
+        <div class="devices__content">
+          <div class="devices__header">
+            <h2 class="devices__header">Добавить устройство</h2>
+            <div class="devices__close-button">
+              <img src="icons/close-button.png" alt="close button">
+            </div>
+          </div>
+          <ul class="devices__list">
+            <!-- Сюда будут добавляться элементы -->
+          </ul>
+        </div>
+      </div>
+    </div>
+    <script src="./renderer.js"></script>
+  </body>
+</html>
