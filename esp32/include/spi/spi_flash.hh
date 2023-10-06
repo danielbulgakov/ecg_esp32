@@ -10,9 +10,6 @@
 class SPIFlash {
    private:
     static SPIFlash* instance;
-    SPIFlash();
-    SPIFlash(const SPIFlash&) = delete;
-    SPIFlash& operator=(const SPIFlash&) = delete;
 
    public:
     static SPIFlash* getInstance() {
@@ -21,7 +18,6 @@ class SPIFlash {
         }
         return instance;
     }
-
     void begin() {
         // pins got from spi_config file
         SPI.begin(SCLK, MISO, MOSI, CS);
