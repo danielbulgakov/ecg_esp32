@@ -12,19 +12,25 @@ void setup() {
 }
 
 void loop() {
-    pack->setNumber(num++);
 
-    if (pack->getSize() > 20)
+    // If package is full we clear previous package and update
+    // counter of package
+    if (pack->getSize() >= 20) {
         pack->clear();
+        pack->setNumber(num++);
+    }
 
+    // For testing we use data auto-generative method
     for (int i = 0; i < MAX_DATA_SIZE; i++) {
         pack->addData(random(0, 4096));
     }
 
+    // Update BLE data characteristics
     bleHandler.setData(pack->getData());
     bleHandler.setNumber(pack->getNumber());
     bleHandler.setSize(pack->getSize());
 
+    // Notify about data update
     bleHandler.bcastIndicate();
 
     delay(1000);
