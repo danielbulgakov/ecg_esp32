@@ -1,6 +1,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#define DEBUG
+
 namespace Config {
     namespace BLE {
         const char* SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
@@ -12,9 +14,6 @@ namespace Config {
 
     namespace Package {
         const int MAX_DATA_SIZE = 20;
-        const unsigned char HEADER = 0;
-        const unsigned char TRAILER = 0;
-        const unsigned char DELIMETER = ',';
     }  // namespace Package
 
     namespace SPI {
