@@ -79,7 +79,7 @@ function changeDeviceList(devices) {
 }
 
 let connectedDevice;
-const bleService = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
+const bleService = '17b5290c-2e8b-11ed-a261-0242ac120002';
 
 async function startFind () {
   window.electronAPI.getDeviceList((event, deviceList) => {
@@ -118,37 +118,56 @@ async function connection() {
   // Получаем характеристики
   const characteristics = await service.getCharacteristics();
   gattCharacteristic = characteristics;
-  // size
+  // x
   gattCharacteristic[0].addEventListener('characteristicvaluechanged',
-    handleSize);
-  // package
+    handleChangedValueX);
+  // y
   gattCharacteristic[1].addEventListener('characteristicvaluechanged',
-    handlePackage);
-  // data
-  gattCharacteristic[2].addEventListener('characteristicvaluechanged',
-    handleData);
+    handleChangedValueY);
   document.querySelector('#start').disabled = false
   document.querySelector('#stop').disabled = false
   console.log('Успешно выполнено!');
 }
 
-function handleSize(event) {
-  console.log('Size пришла');
-  const value = new Int16Array(event.target.value.buffer);
-  outputSize.textContent = `Получены данные: ${value}`;
-
+// Функция для чтения x
+function handleChangedValueX(event) {
+  // Массив значений по x
+  let value = new Float32Array(event.target.value.buffer);
+  outputX.textContent = `Получены данные: ${value}`;
+  var now = new Date()
+  console.log('> ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds() + ' UV Index is ', value)
 }
 
-function handlePackage(event) {
-  console.log('Package пришла');
-  const value = new Int16Array(event.target.value.buffer);
-  outputPackage.textContent = `Получены данные: ${value}`;
-}
+// Функция для чтения y
+function handleChangedValueY(event) {
+  // Функция для преобразования пакета
+  function bytesToString(arraysBytes) {
+    return new TextDecoder().decode(arraysBytes);
+  }
+  const buffer = event.target.value.buffer;
+  // Массив значений по x
+  const startMessage = new Int8Array(buffer.slice(0, 8));
+  const packNumber = new Int32Array(buffer.slice(8, 12));
+  const numberUMV = new Int16Array(buffer.slice(12, 14));
+  const startBracket = new Int8Array(buffer.slice(14, 15));
+  console.log(buffer.slice(15, 414));
+  const data = new Float32Array(buffer.slice(15, 415));
+  const endBracket = new Int8Array(buffer.slice(415, 416));
+  
+  const stringValue = bytesToString(startMessage);
+  const stringStartBracket = bytesToString(startBracket);
+  const stringEndBracket = bytesToString(endBracket);
+  console.log('Start message', stringValue);
+  console.log('Number pack: ', packNumber);
+  console.log('Number UMV: ', numberUMV);
+  console.log('Start bracket: ', stringStartBracket);
+  console.log('Number UMV: ', data);
+  console.log('End bracket: ', stringEndBracket);
 
-function handleData(event) {
-  console.log('Data пришла', event.target.value.buffer);
-  const value = new Int16Array(event.target.value.buffer);
-  outputData.textContent = `Получены данные: ${value}`;
+
+  outputY.textContent = `Получены данные: ${stringValue}, ${packNumber[0]}, ${numberUMV}, ${stringStartBracket}\n${data}\n${stringEndBracket}`;
+  // var now = new Date()
+  // console.log('> ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds() + ' UV Index is ', value)
 }
 
 document.getElementById('start').addEventListener('click', readDataFromDevice);
@@ -156,7 +175,7 @@ document.getElementById('stop').addEventListener('click', stopDataFromDevice);
 
 // Функция будет читать данные
 function readDataFromDevice() {
-  // size
+  // x
   gattCharacteristic[0].startNotifications()
   .then(_ => {
     console.log('Start reading...')
@@ -167,19 +186,8 @@ function readDataFromDevice() {
     console.log('[ERROR] Start: ' + error)
   })
 
-  // package
+  // y
   gattCharacteristic[1].startNotifications()
-  .then(_ => {
-    console.log('Start reading...')
-    document.querySelector('#start').disabled = true
-    document.querySelector('#stop').disabled = false
-  })
-  .catch(error => {
-    console.log('[ERROR] Start: ' + error)
-  })
-
-  // data
-  gattCharacteristic[2].startNotifications()
   .then(_ => {
     console.log('Start reading...')
     document.querySelector('#start').disabled = true
@@ -192,7 +200,6 @@ function readDataFromDevice() {
 
 // Функция отменяет чтение данных
 function stopDataFromDevice() {
-  // size
   gattCharacteristic[0].stopNotifications()
   .then(_ => {
     console.log('Stop reading...')
@@ -203,19 +210,8 @@ function stopDataFromDevice() {
     console.log('[ERROR] Stop: ' + error)
   })
 
-  // package
+  // y
   gattCharacteristic[1].stopNotifications()
-  .then(_ => {
-    console.log('Stop reading...')
-    document.querySelector('#start').disabled = false
-    document.querySelector('#stop').disabled = true
-  })
-  .catch(error => {
-    console.log('[ERROR] Stop: ' + error)
-  })
-
-  // data
-  gattCharacteristic[2].stopNotifications()
   .then(_ => {
     console.log('Stop reading...')
     document.querySelector('#start').disabled = false
