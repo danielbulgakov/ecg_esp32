@@ -61,6 +61,7 @@ function changeDeviceList(devices) {
         console.log('Те устройства, что сейчас есть: ', currentDevices);
         console.log('Те устройства, что пришли: ', devices);
         // TODO: Можно, конечно, сделать иначе (фильтрануть и удалить только нужные звенья, но пускай пока так)
+        // TODO: Так же, вместо, setTimeout можно использовать setInterval
         currentDevices = devices;
         clearDeviceList();
         currentDevices.forEach(currentDevice => {
