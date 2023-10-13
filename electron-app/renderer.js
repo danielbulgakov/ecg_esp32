@@ -11,6 +11,8 @@ popupCloseButton.addEventListener('click', event => {
   currentDevices = [];
   // Очищаю эти устройства
   clearDeviceList();
+  // Сбрасываю флаг обновления списка устройств
+  resetUpdateListDeviceFlag();
 });
 
 popupWrapper.addEventListener('click', event => {
@@ -22,6 +24,8 @@ popupWrapper.addEventListener('click', event => {
     currentDevices = [];
     // Очищаю эти устройства
     clearDeviceList();
+    // Сбрасываю флаг обновления списка устройств
+    resetUpdateListDeviceFlag();
   }
 });
 
@@ -37,10 +41,37 @@ function clearDeviceList() {
 }
 
 let currentDevices = [];
+let isUpdateListDevices = null;
+const secondPerUpdate = 10;
+
+// Если произошло выключение окна выбора устройства, то нужно сбросить isUpdateListDevices
+function resetUpdateListDeviceFlag() {
+  isUpdateListDevices = null;
+}
 
 // Поменять лист доступных устройств
 function changeDeviceList(devices) {
-  // TODO: Было бы неплохо удалять отсюда элементы, которые не появляются долгое время
+  // Логика удаления отсюда элементов, которые не появляются долгое время
+  if (!isUpdateListDevices) {
+    isUpdateListDevices = setTimeout(() => {
+      console.log('Devices length: ', devices.length);
+      if (devices.length) {
+        // Нужно сравнить текущие devices с теми что запомнили
+        // Для начала посмотрим на них через console.log
+        console.log('Те устройства, что сейчас есть: ', currentDevices);
+        console.log('Те устройства, что пришли: ', devices);
+        // TODO: Можно, конечно, сделать иначе (фильтрануть и удалить только нужные звенья, но пускай пока так)
+        // TODO: Так же, вместо, setTimeout можно использовать setInterval
+        currentDevices = devices;
+        clearDeviceList();
+        currentDevices.forEach(currentDevice => {
+          deviceList.append(createListItem(currentDevice));
+        });
+      }
+      // Сбрасываю флаг обновления списка устройств
+      resetUpdateListDeviceFlag();
+    }, secondPerUpdate * 1000);
+  }
   // Создаёт новое устройство
   function createListItem(device) {
     const listItem = document.createElement('li');
@@ -50,6 +81,8 @@ function changeDeviceList(devices) {
       console.log('Параметры текущего создаваемого устройства: ', device, device.deviceId)
       window.electronAPI.acceptBluetoothRequest(device);
       popup.classList.remove('devices_show');
+      // Сбрасываю флаг обновления списка устройств
+      resetUpdateListDeviceFlag();
     });
     return listItem;
   }
@@ -69,9 +102,9 @@ function changeDeviceList(devices) {
     })
   }
 
-  console.log('Устройства ', devices);
+  // console.log('Устройства ', devices);
   const deviceList = document.querySelector('.devices__list');
-  console.log('Текущий массив: ', currentDevices)
+  // console.log('Текущий массив: ', currentDevices)
   // Добавим уникальные значения
   makeUniqueList().forEach(currentDevice => {
     deviceList.append(createListItem(currentDevice));
