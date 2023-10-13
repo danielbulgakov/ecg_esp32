@@ -5,7 +5,6 @@
 #include "spi/spi_flash.hh"
 
 #include <helpers/config.hh>
-#include <helpers/logger.hh>
 
 BLEServiceHandler* bleHandler;
 SPIFlash* flash;
@@ -14,17 +13,15 @@ SingletonPackage* pack;
 uint16_t num = 0;
 
 void setup() {
-    Logger::init();
-    bleHandler = BLEServiceHandler::inst();
+    // bleHandler = BLEServiceHandler::inst();
+    // bleHandler->setup();
     pack = SingletonPackage::inst();
     flash = SPIFlash::inst();
-    bleHandler->setup();
     flash->begin();
-    Logger::log("MAIN", Logger::Urgency::INFO, "Setup completed");
 }
 
 void loop() {
-
+    flash->write();
     // If package is full we clear previous package and update
     // counter of package
     if (pack->isPayloadFull()) {
@@ -40,14 +37,14 @@ void loop() {
         pack->addData(random(0, 4096), random(0, 4096));
     }
 
-    // Update BLE data characteristics
-    bleHandler->setData(pack->getData(0), pack->getSize());
-    bleHandler->setData1(pack->getData(1), pack->getSize());
-    bleHandler->setNumber(pack->getNumber());
-    bleHandler->setSize(pack->getSize());
+    // // Update BLE data characteristics
+    // bleHandler->setData(pack->getData(0), pack->getSize());
+    // bleHandler->setData1(pack->getData(1), pack->getSize());
+    // bleHandler->setNumber(pack->getNumber());
+    // bleHandler->setSize(pack->getSize());
 
-    // Notify about data update
-    bleHandler->bcastIndicate();
+    // // Notify about data update
+    // bleHandler->bcastIndicate();
 
-    delay(1000);
+    // delay(1000);
 }

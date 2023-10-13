@@ -6,18 +6,17 @@
 #include <BLEUtils.h>
 
 #include <helpers/config.hh>
-#include <helpers/logger.hh>
 
 class MyServerCallbacks : public BLEServerCallbacks {
     bool deviceConnected;
 
     void onConnect(BLEServer* pServer) {
-        Logger::log("BLE", Logger::Urgency::INFO, "Device connected");
+        log_i("BLE :: Device connected");
         deviceConnected = true;
     }
 
     void onDisconnect(BLEServer* pServer) {
-        Logger::log("BLE", Logger::Urgency::INFO, "Device disconnected");
+        log_i("BLE :: disconnected");
         deviceConnected = false;
         reconnect(pServer);
     }
@@ -106,7 +105,7 @@ class BLEServiceHandler {
     }
 
     void bcastIndicate() {
-        Logger::log("BLE", Logger::Urgency::INFO, "Values indicated");
+        log_i("BLE :: Values indicated");
         pDataCharacteristic->indicate();
         pDataCharacteristic1->indicate();
         pSizeCharacteristic->indicate();
