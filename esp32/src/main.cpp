@@ -13,21 +13,21 @@ SingletonPackage* pack;
 uint16_t num = 0;
 
 void setup() {
-    // bleHandler = BLEServiceHandler::inst();
-    // bleHandler->setup();
+    bleHandler = BLEServiceHandler::inst();
+    bleHandler->setup();
     pack = SingletonPackage::inst();
     flash = SPIFlash::inst();
     flash->begin();
 }
 
 void loop() {
-    flash->write();
     // If package is full we clear previous package and update
     // counter of package
     if (pack->isPayloadFull()) {
         flash->writeData(pack->getNumber(),
                          reinterpret_cast<uint8_t*>(pack->getData(0)),
-                         pack->getSize());
+                         reinterpret_cast<uint8_t*>(pack->getData(1)),
+                         pack->getSize() * 2 /* 2x for cast from 16 to 8 */);
         pack->clear();
         pack->setNumber(num++);  // Set package number for next packet
     }
@@ -37,14 +37,14 @@ void loop() {
         pack->addData(random(0, 4096), random(0, 4096));
     }
 
-    // // Update BLE data characteristics
-    // bleHandler->setData(pack->getData(0), pack->getSize());
-    // bleHandler->setData1(pack->getData(1), pack->getSize());
-    // bleHandler->setNumber(pack->getNumber());
-    // bleHandler->setSize(pack->getSize());
+    // Update BLE data characteristics
+    bleHandler->setData(pack->getData(0), pack->getSize());
+    bleHandler->setData1(pack->getData(1), pack->getSize());
+    bleHandler->setNumber(pack->getNumber());
+    bleHandler->setSize(pack->getSize());
 
-    // // Notify about data update
-    // bleHandler->bcastIndicate();
+    // Notify about data update
+    bleHandler->bcastIndicate();
 
-    // delay(1000);
+    delay(1000);
 }

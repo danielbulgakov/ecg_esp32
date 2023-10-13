@@ -33,7 +33,7 @@ class SPIFlash {
         log_i("SPI :: SD mounted successfully");
     }
 
-    void writeData(int number, uint8_t* data, size_t length) {
+    void writeData(int number, uint8_t* data1, uint8_t* data2, size_t length) {
         String filename = "/" + String(number);
         File file = SD.open(filename, FILE_WRITE);
         if (!file) {
@@ -41,8 +41,11 @@ class SPIFlash {
             return;
         }
 
-        size_t written = file.write(data, length);
-        if (written != length) {
+        size_t written = file.write(data1, length);
+        written += file.write((uint8_t*)"\n", 1);
+        written += file.write(data2, length);
+
+        if (written != 2 * length + 1) {
             log_e("SPI :: Failed to write data to file");
         }
 
@@ -51,7 +54,8 @@ class SPIFlash {
         log_i("SPI :: Wrote package to file");
     }
 
-    void readData(int number, uint8_t* buffer, size_t length) {
+    void readData(int number, uint8_t* buffer1, uint8_t* buffer2,
+                  size_t length) {
         String filename = "/" + String(number);
         File file = SD.open(filename, FILE_READ);
         if (!file) {
@@ -59,8 +63,11 @@ class SPIFlash {
             return;
         }
 
-        size_t read = file.read(buffer, length);
-        if (read != length) {
+        size_t read = file.read(buffer1, length);
+        file.read();  // Skip newline
+        read += file.read(buffer2, length);
+
+        if (read != 2 * length) {
             log_e("SPI :: Failed to read data from file");
         }
 
