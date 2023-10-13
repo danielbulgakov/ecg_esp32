@@ -11,7 +11,7 @@ popupCloseButton.addEventListener('click', event => {
   currentDevices = [];
   // Очищаю эти устройства
   clearDeviceList();
-  // Сбрасываю флаг обновления списка устройств
+  // Сбрасываю флаг обновления списка устройств!
   resetUpdateListDeviceFlag();
 });
 
