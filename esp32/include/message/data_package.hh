@@ -3,38 +3,39 @@
 
 #include <stdint.h>
 #include <vector>
-#include "message/package_format.hh"
 
-typedef uint16_t DataType;
+#include <helpers/config.hh>
 
 class DataPackage {
    private:
-    PackageFormat format;
-    uint16_t maxSize;
     uint16_t number;
-    std::vector<DataType> payload;
+    std::vector<std::vector<uint16_t>> payloads;  // Vector of payloads
 
    public:
-    explicit DataPackage(uint16_t number = 0, uint16_t maxSize = 20)
-        : number(number), maxSize(maxSize) {}
+    explicit DataPackage(uint16_t number = 0) : number(number) {
+        payloads.resize(2);  // Initialize 2 vectors for payloads
+    }
 
-    void addData(DataType value) {
+    void addData(uint16_t value, uint16_t value1) {
         if (!isPayloadFull()) {
-            payload.push_back(value);
+            payloads[0].push_back(value);
+            payloads[1].push_back(value1);
         }
     }
 
-    bool isPayloadFull() const { return payload.size() >= maxSize; }
+    bool isPayloadFull() const {
+        return payloads[0].size() >= Config::Package::MAX_DATA_SIZE;
+    }
 
-    uint16_t* getData() { return payload.data(); }
+    uint16_t* getData(int index) { return payloads[index].data(); }
 
-    uint16_t getSize() { return (uint16_t)payload.size(); }
+    uint16_t getSize() { return (uint16_t)payloads[0].size(); }
 
     uint16_t getNumber() { return number; }
 
     void clear() {
-        payload.clear();
-        number = 0;
+        payloads[0].clear();
+        payloads[1].clear();
     }
 
     void setNumber(uint16_t number) { this->number = number; }
@@ -50,7 +51,7 @@ class SingletonPackage : public DataPackage {
     SingletonPackage& operator=(const SingletonPackage&) = delete;
 
    public:
-    static SingletonPackage* getInstance() {
+    static SingletonPackage* inst() {
         if (!instance) {
             instance = new SingletonPackage();
         }

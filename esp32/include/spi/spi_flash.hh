@@ -2,63 +2,79 @@
 #define SPI_FLASH_H
 
 #include "FS.h"
+#include "SD.h"
 #include "SPI.h"
-#include "SPIFFS.h"
 
-#include "spi/spi_config.hh"
+#include <helpers/config.hh>
 
 class SPIFlash {
    private:
     static SPIFlash* instance;
 
    public:
-    static SPIFlash* getInstance() {
+    static SPIFlash* inst() {
         if (!instance) {
             instance = new SPIFlash();
         }
         return instance;
     }
+
     void begin() {
-        // pins got from spi_config file
-        SPI.begin(SCLK, MISO, MOSI, CS);
-        if (!SPIFFS.begin(true)) {
-            Serial.println("An error has occurred while mounting SPIFFS");
+        // pins got from config file
+        SPI.begin(Config::SPI::SCLK, Config::SPI::MISO, Config::SPI::MOSI,
+                  Config::SPI::CS);
+        if (!SD.begin(Config::SPI::CS, SPI)) {
+            log_e("SPI :: An error has occurred while mounting SD");
         }
+        if (SD.cardType() == CARD_NONE) {
+            log_e("No SD card attached");
+            return;
+        }
+        log_i("SPI :: SD mounted successfully");
     }
 
-    void writeData(int number, uint8_t* data, size_t length) {
+    void writeData(int number, uint8_t* data1, uint8_t* data2, size_t length) {
         String filename = "/" + String(number);
-        File file = SPIFFS.open(filename, FILE_WRITE);
+        File file = SD.open(filename, FILE_WRITE);
         if (!file) {
-            Serial.println("Failed to open file for writing");
+            log_e("SPI :: Failed to open file for writing");
             return;
         }
 
-        size_t written = file.write(data, length);
-        if (written != length) {
-            Serial.println("Failed to write data to file");
+        size_t written = file.write(data1, length);
+        written += file.write((uint8_t*)"\n", 1);
+        written += file.write(data2, length);
+
+        if (written != 2 * length + 1) {
+            log_e("SPI :: Failed to write data to file");
         }
 
         file.close();
+
+        log_i("SPI :: Wrote package to file");
     }
 
-    void readData(int number, uint8_t* buffer, size_t length) {
+    void readData(int number, uint8_t* buffer1, uint8_t* buffer2,
+                  size_t length) {
         String filename = "/" + String(number);
-        File file = SPIFFS.open(filename, FILE_READ);
+        File file = SD.open(filename, FILE_READ);
         if (!file) {
-            Serial.println("Failed to open file for reading");
+            log_e("SPI :: Failed to open file for reading");
             return;
         }
 
-        size_t read = file.read(buffer, length);
-        if (read != length) {
-            Serial.println("Failed to read data from file");
+        size_t read = file.read(buffer1, length);
+        file.read();  // Skip newline
+        read += file.read(buffer2, length);
+
+        if (read != 2 * length) {
+            log_e("SPI :: Failed to read data from file");
         }
 
         file.close();
+
+        log_i("SPI :: Wrote package to file");
     }
-
-
 };
 
 // Define static members of classes

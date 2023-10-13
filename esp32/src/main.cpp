@@ -1,49 +1,50 @@
 #include <Arduino.h>
+
 #include "ble/ble_service_handler.hh"
 #include "message/data_package.hh"
 #include "spi/spi_flash.hh"
 
-BLEServiceHandler bleHandler;
+#include <helpers/config.hh>
+
+BLEServiceHandler* bleHandler;
 SPIFlash* flash;
 SingletonPackage* pack;
+
 uint16_t num = 0;
 
 void setup() {
-    Serial.begin(115200);
-    Serial.println("G");
-    bleHandler.setup();
-    pack = SingletonPackage::getInstance();
-    flash = SPIFlash::getInstance();
-    Serial.println("GG");
+    bleHandler = BLEServiceHandler::inst();
+    bleHandler->setup();
+    pack = SingletonPackage::inst();
+    flash = SPIFlash::inst();
     flash->begin();
-    Serial.println("A");
 }
 
 void loop() {
-
     // If package is full we clear previous package and update
     // counter of package
-    if (pack->getSize() >= 20) {
+    if (pack->isPayloadFull()) {
         flash->writeData(pack->getNumber(),
-                         reinterpret_cast<uint8_t*>(pack->getData()),
-                         pack->getSize());
+                         reinterpret_cast<uint8_t*>(pack->getData(0)),
+                         reinterpret_cast<uint8_t*>(pack->getData(1)),
+                         pack->getSize() * 2 /* 2x for cast from 16 to 8 */);
         pack->clear();
-        pack->setNumber(num++);
+        pack->setNumber(num++);  // Set package number for next packet
     }
-    Serial.println("B");
 
     // For testing we use data auto-generative method
-    for (int i = 0; i < MAX_DATA_SIZE; i++) {
-        pack->addData(random(0, 4096));
+    for (int i = 0; i < Config::Package::MAX_DATA_SIZE; i++) {
+        pack->addData(random(0, 4096), random(0, 4096));
     }
 
     // Update BLE data characteristics
-    bleHandler.setData(pack->getData());
-    bleHandler.setNumber(pack->getNumber());
-    bleHandler.setSize(pack->getSize());
+    bleHandler->setData(pack->getData(0), pack->getSize());
+    bleHandler->setData1(pack->getData(1), pack->getSize());
+    bleHandler->setNumber(pack->getNumber());
+    bleHandler->setSize(pack->getSize());
 
     // Notify about data update
-    bleHandler.bcastIndicate();
+    bleHandler->bcastIndicate();
 
     delay(1000);
 }
