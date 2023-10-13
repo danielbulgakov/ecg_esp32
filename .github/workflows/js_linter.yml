@@ -1,17 +1,23 @@
 name: Lint
-
 on: [push, pull_request]
-
 jobs:
-  lint:
+  run-linters:
+    name: Run linters
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-
-      - uses: wearerequired/lint-action@v1
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          node-version: '16'
+      - name: Install dependencies
+        run: npm install
+      - name: Run ESLint
+        uses: wearerequired/lint-action@v1
+        with:
           eslint: true
-          eslint_args: "electron-app/*.js"
+      - name: Run Stylelint
+        uses: wearerequired/lint-action@v1
+        with:
           stylelint: true
-          stylelint_args: "electron-app/css/*.css"
