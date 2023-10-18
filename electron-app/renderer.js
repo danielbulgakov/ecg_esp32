@@ -1,3 +1,6 @@
+// Импорт других модулей
+import { test } from "./js/renderer/test.js";
+
 // Логика popup
 const popup = document.querySelector('.devices');
 const popupCloseButton = document.querySelector('.devices__close-button');
@@ -5,6 +8,8 @@ const popupWrapper = document.querySelector('.devices__wrapper');
 
 popupCloseButton.addEventListener('click', event => {
   popup.classList.remove('devices_show');
+  // вызов функции из другого модуля
+  test(currentDevices);
   // Отправляю запрос в главный поток о прекращении события
   cancelRequest();
   // Сбрасываю запомненные устройства
