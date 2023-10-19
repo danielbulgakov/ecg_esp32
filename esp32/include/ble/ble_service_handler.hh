@@ -7,8 +7,9 @@
 
 #include <helpers/config.hh>
 
-class MyServerCallbacks : public BLEServerCallbacks {
-    bool deviceConnected;
+class CustomCallbacks : public BLEServerCallbacks {
+   private:
+    static bool deviceConnected;
 
     void onConnect(BLEServer* pServer) {
         log_i("BLE :: Device connected");
@@ -28,6 +29,9 @@ class MyServerCallbacks : public BLEServerCallbacks {
             delay(100);
         }
     }
+
+   public:
+    static bool isConnected() { return deviceConnected; }
 };
 
 class BLEServiceHandler {
