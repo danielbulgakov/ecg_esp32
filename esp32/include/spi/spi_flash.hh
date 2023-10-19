@@ -75,6 +75,32 @@ class SPIFlash {
 
         log_i("SPI :: Wrote package to file");
     }
+
+    void readNextData(uint8_t* buffer1, uint8_t* buffer2,
+                  size_t length) {
+        File file = file.openNextFile();
+        if (!file) {
+            log_e("SPI :: Failed to open file for reading");
+            return;
+        }
+
+        size_t read = file.read(buffer1, length);
+        file.read();  // Skip newline
+        read += file.read(buffer2, length);
+
+        if (read != 2 * length) {
+            log_e("SPI :: Failed to read data from file");
+        }
+
+        file.close();
+
+        log_i("SPI :: Wrote package to file");
+    }
+
+    bool isEmpty() {
+        File root = SD.open("/");
+        return !root.openNextFile();
+    }
 };
 
 // Define static members of classes
