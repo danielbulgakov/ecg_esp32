@@ -20,23 +20,7 @@ void setup() {
     flash->begin();
 }
 
-void loop() {
-    // If package is full we clear previous package and update
-    // counter of package
-    if (pack->isPayloadFull()) {
-        flash->writeData(pack->getNumber(),
-                         reinterpret_cast<uint8_t*>(pack->getData(0)),
-                         reinterpret_cast<uint8_t*>(pack->getData(1)),
-                         pack->getSize() * 2 /* 2x for cast from 16 to 8 */);
-        pack->clear();
-        pack->setNumber(num++);  // Set package number for next packet
-    }
-
-    // For testing we use data auto-generative method
-    for (int i = 0; i < Config::Package::MAX_DATA_SIZE; i++) {
-        pack->addData(random(0, 4096), random(0, 4096));
-    }
-
+void blePackSend() {
     // Update BLE data characteristics
     bleHandler->setData(pack->getData(0), pack->getSize());
     bleHandler->setData1(pack->getData(1), pack->getSize());
@@ -45,6 +29,57 @@ void loop() {
 
     // Notify about data update
     bleHandler->bcastIndicate();
+}
+
+void spiPackWrite() {
+    // Write data to SPI
+    flash->writeData(pack->getNumber(),
+                     reinterpret_cast<uint8_t*>(pack->getData(0)),
+                     reinterpret_cast<uint8_t*>(pack->getData(1)),
+                     pack->getSize() * 2 /* 2x for cast from 16 to 8 */);
+}
+
+void spiToBleWrite() {
+    static uint8_t* data0 = new uint8_t[Config::Package::MAX_DATA_SIZE];
+    static uint8_t* data1 = new uint8_t[Config::Package::MAX_DATA_SIZE];
+    std::string name;
+
+    while (!flash->isEmpty()) {
+        flash->readNextData(data0, data1, Config::Package::MAX_DATA_SIZE * 2,
+                            name);
+        bleHandler->setData((uint16_t*)data0, Config::Package::MAX_DATA_SIZE);
+        bleHandler->setData1((uint16_t*)data1, Config::Package::MAX_DATA_SIZE);
+        bleHandler->setNumber(stoi(name));
+        bleHandler->setSize(Config::Package::MAX_DATA_SIZE);
+    }
+
+    // Notify about data update
+    bleHandler->bcastIndicate();
+}
+
+void loop() {
+    // If package is full we clear previous package and update
+    // counter of package
+    if (pack->isPayloadFull()) {
+
+        if (CustomCallbacks::isConnected()) {
+            if (!flash->isEmpty()) {
+                spiPackWrite();
+                spiToBleWrite();
+            } else {
+                blePackSend();
+            }
+        } else {
+            spiPackWrite();
+        }
+        pack->clear();
+        pack->setNumber(num++);  // Set package number for next packet
+    }
+
+    // For testing we use data auto-generative method
+    for (int i = 0; i < Config::Package::MAX_DATA_SIZE; i++) {
+        pack->addData(random(0, 4096), random(0, 4096));
+    }
 
     delay(1000);
 }
