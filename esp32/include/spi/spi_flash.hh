@@ -51,7 +51,7 @@ class SPIFlash {
 
         file.close();
 
-        log_i("SPI :: Wrote package to file");
+        log_i("SPI :: Wrote package to file %d", stoi(file.name()));
     }
 
     void readData(int number, uint8_t* buffer1, uint8_t* buffer2,
@@ -73,7 +73,7 @@ class SPIFlash {
 
         file.close();
 
-        log_i("SPI :: Wrote package to file");
+        log_i("SPI :: Wrote package to file %d", stoi(file.name()));
     }
 
     void readNextData(uint8_t* buffer1, uint8_t* buffer2,
@@ -95,7 +95,7 @@ class SPIFlash {
 
         file.close();
 
-        log_i("SPI :: Wrote package to file");
+        log_i("SPI :: Wrote package to file %d", stoi(file.name()));
     }
 
     bool isEmpty() {
