@@ -77,8 +77,9 @@ class SPIFlash {
     }
 
     void readNextData(uint8_t* buffer1, uint8_t* buffer2,
-                  size_t length) {
+                  size_t length, std::string& fileName) {
         File file = file.openNextFile();
+        fileName = std::string(file.name());
         if (!file) {
             log_e("SPI :: Failed to open file for reading");
             return;
