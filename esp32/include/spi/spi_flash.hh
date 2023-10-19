@@ -51,7 +51,7 @@ class SPIFlash {
 
         file.close();
 
-        log_i("SPI :: Wrote package to file");
+        log_i("SPI :: Wrote package to file %d", stoi(file.name()));
     }
 
     void readData(int number, uint8_t* buffer1, uint8_t* buffer2,
@@ -73,7 +73,34 @@ class SPIFlash {
 
         file.close();
 
-        log_i("SPI :: Wrote package to file");
+        log_i("SPI :: Wrote package to file %d", stoi(file.name()));
+    }
+
+    void readNextData(uint8_t* buffer1, uint8_t* buffer2,
+                  size_t length, std::string& fileName) {
+        File file = file.openNextFile();
+        fileName = std::string(file.name());
+        if (!file) {
+            log_e("SPI :: Failed to open file for reading");
+            return;
+        }
+
+        size_t read = file.read(buffer1, length);
+        file.read();  // Skip newline
+        read += file.read(buffer2, length);
+
+        if (read != 2 * length) {
+            log_e("SPI :: Failed to read data from file");
+        }
+
+        file.close();
+
+        log_i("SPI :: Wrote package to file %d", stoi(file.name()));
+    }
+
+    bool isEmpty() {
+        File root = SD.open("/");
+        return !root.openNextFile();
     }
 };
 
