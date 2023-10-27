@@ -1,49 +1,13 @@
 // Импорт других модулей
 import { test } from "./js/renderer/test.js";
-
-
-var ctx = document.getElementById('myChart');
-var myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        datasets: [{
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }]
-        }
-    }
-});
+import { createLineChart } from "./js/renderer/chart.js";
+import { arrayAxeX, arrayAxeY } from "./js/renderer/chartData.js";
 
 // Логика popup
 const popup = document.querySelector('.devices');
 const popupCloseButton = document.querySelector('.devices__close-button');
 const popupWrapper = document.querySelector('.devices__wrapper');
+let myChart = null;
 
 popupCloseButton.addEventListener('click', event => {
   popup.classList.remove('devices_show');
@@ -207,6 +171,7 @@ async function connection() {
   document.querySelector('#start').disabled = false
   document.querySelector('#stop').disabled = false
   console.log('Успешно выполнено!');
+  myChart = createLineChart();
 }
 
 // Функция для чтения x
@@ -214,8 +179,17 @@ function handleChangedValueX(event) {
   // Массив значений по x
   let value = new Float32Array(event.target.value.buffer);
   outputX.textContent = `Получены данные: ${value}`;
+  // Добавляем их в массив
+  arrayAxeX.push(...value);
+
+  // Обновляем график x
+  myChart.data.labels.push(...value);
+
+
+
   var now = new Date()
   console.log('> ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds() + ' UV Index is ', value)
+  console.log(arrayAxeX);
 }
 
 // Функция для чтения y
@@ -225,7 +199,7 @@ function handleChangedValueY(event) {
     return new TextDecoder().decode(arraysBytes);
   }
   const buffer = event.target.value.buffer;
-  // Массив значений по x
+  // Массив значений по y
   const startMessage = new Int8Array(buffer.slice(0, 8));
   const packNumber = new Int32Array(buffer.slice(8, 12));
   const numberUMV = new Int16Array(buffer.slice(12, 14));
@@ -241,8 +215,21 @@ function handleChangedValueY(event) {
   console.log('Number pack: ', packNumber);
   console.log('Number UMV: ', numberUMV);
   console.log('Start bracket: ', stringStartBracket);
-  console.log('Number UMV: ', data);
+  console.log('Core of data: ', data);
+  // Добавляем их в массив
+  arrayAxeY.push(...data);
   console.log('End bracket: ', stringEndBracket);
+  console.log(arrayAxeY);
+
+
+  // Обновляем данные для y
+  myChart.data.datasets[0].data.push(...data);
+
+  // if (myChart.data.labels.length > 200) {
+  //   myChart.data.labels.splice(0, 100);
+  //   myChart.data.datasets[0].data.splice(0, 100);
+  // }
+  myChart.update();
 
 
   outputY.textContent = `Получены данные: ${stringValue}, ${packNumber[0]}, ${numberUMV}, ${stringStartBracket}\n${data}\n${stringEndBracket}`;
