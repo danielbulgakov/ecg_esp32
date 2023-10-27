@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self';
+      script-src 'self' https://cdn.jsdelivr.net/npm/chart.js;"
+    />
     <title>Web Bluetooth API</title>
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
     <h1>Web Bluetooth API</h1>
@@ -14,12 +18,16 @@
     <button id="start" disabled>Read data</button>
     <button id="stop" disabled>Stop read</button>
 
-    <p>Currently selected bluetooth device: <strong id="device-name"></strong></p>
-    <div id="outputX" style="margin-bottom: 20px;"></div>
-    <div id="outputY" style="margin-bottom: 20px;"></div>
-    <div id="outputData" style="margin-bottom: 20px;"></div>
-    <div id="outputSize" style="margin-bottom: 20px;"></div>
-    <div id="outputPackage" style="margin-bottom: 20px;"></div>
+    <p>
+      Currently selected bluetooth device: <strong id="device-name"></strong>
+    </p>
+    <div id="outputX" style="margin-bottom: 20px"></div>
+    <div id="outputY" style="margin-bottom: 20px"></div>
+    <div id="outputData" style="margin-bottom: 20px"></div>
+    <div id="outputSize" style="margin-bottom: 20px"></div>
+    <div id="outputPackage" style="margin-bottom: 20px"></div>
+
+    <canvas id="myChart"></canvas>
 
     <!-- Popup (device list) -->
     <div class="devices">
@@ -28,7 +36,7 @@
           <div class="devices__header">
             <h2 class="devices__header">Добавить устройство</h2>
             <div class="devices__close-button">
-              <img src="icons/close-button.png" alt="close button">
+              <img src="icons/close-button.png" alt="close button" />
             </div>
           </div>
           <ul class="devices__list">
@@ -37,6 +45,7 @@
         </div>
       </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./renderer.js" type="module"></script>
   </body>
 </html>
