@@ -18,9 +18,13 @@ void setup() {
     pack = SingletonPackage::inst();
     flash = SPIFlash::inst();
     flash->begin();
+
+    Serial1.begin(115200);
+    Serial.begin(115200);
 }
 
 void loop() {
+    // log.e(Serial1.readString());
     // If package is full we clear previous package and update
     // counter of package
     if (pack->isPayloadFull()) {
