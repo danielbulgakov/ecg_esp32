@@ -1,7 +1,8 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef CONFIG_HH
+#define CONFIG_HH
 
 #define DEBUG
+#include <Arduino.h>
 
 namespace Config {
     namespace BLE {
@@ -24,4 +25,4 @@ namespace Config {
     }  // namespace SPI
 }  // namespace Config
 
-#endif  // CONFIG_H
+#endif  // CONFIG_HH

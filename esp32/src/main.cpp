@@ -1,50 +1,101 @@
 #include <Arduino.h>
+#include <Thread.h>
 
-#include "ble/ble_service_handler.hh"
-#include "message/data_package.hh"
-#include "spi/spi_flash.hh"
+#include <ble/ble_service_handler.hh>      // BLE
+#include <ble/custom_server_callbacks.hh>  // BLE CALLBACKS
+#include <data/package.hh>                 // PACKAGE
+#include <helpers/config.hh>               // GLOBAL CONFIG
+#include <spi/spi_flash.hh>                // SPI
 
-#include <helpers/config.hh>
-
-BLEServiceHandler* bleHandler;
+BLEServiceHandler* ble;
 SPIFlash* flash;
-SingletonPackage* pack;
+Package pack;
 
-uint16_t num = 0;
+/** Create threads to handle 
+ * Data saving and saveing routines
+*/
+Thread sensorsThread = Thread();
+Thread saveThread = Thread();
+constexpr uint16_t sensorDelay = 1000;
+constexpr uint16_t saveDelay = 1000;
 
-void setup() {
-    bleHandler = BLEServiceHandler::inst();
-    bleHandler->setup();
-    pack = SingletonPackage::inst();
-    flash = SPIFlash::inst();
-    flash->begin();
+void
+saveData() {
+    /** For debug purposes we firstly use
+     * to init save data as random values
+    */
+    for (int i = 0; i < Config::Package::MAX_DATA_SIZE; i++) {
+        pack.insert(random(0, 4096), 0);
+        pack.insert(random(0, 4096), 1);
+    }
 }
 
-void loop() {
-    // If package is full we clear previous package and update
-    // counter of package
-    if (pack->isPayloadFull()) {
-        flash->writeData(pack->getNumber(),
-                         reinterpret_cast<uint8_t*>(pack->getData(0)),
-                         reinterpret_cast<uint8_t*>(pack->getData(1)),
-                         pack->getSize() * 2 /* 2x for cast from 16 to 8 */);
-        pack->clear();
-        pack->setNumber(num++);  // Set package number for next packet
+void
+saveData() {
+    while (!flash->isEmpty()) {
+        uint8_t *buff1, *buff2;
+        uint16_t size;
+        flash->readData(buff1, buff2, size);
+
+        // Update BLE data characteristics
+        ble->setDataPack0(reinterpret_cast<uint16_t*>(buff1), size);
+        ble->setDataPack1(reinterpret_cast<uint16_t*>(buff2), size);
+        ble->setPackageSize(size);
+
+        // Notify about data update
+        ble->broadcastIndicate();
+
+        delay(saveDelay);
     }
 
-    // For testing we use data auto-generative method
-    for (int i = 0; i < Config::Package::MAX_DATA_SIZE; i++) {
-        pack->addData(random(0, 4096), random(0, 4096));
+    while (!pack.isEmpty() && !CustomServerCallbacks::isConnected()) {
+        flash->writeData(reinterpret_cast<uint8_t*>(pack.extract(0).data()),
+                         reinterpret_cast<uint8_t*>(pack.extract(1).data()),
+                         pack.getSize() * 2);
+        delay(saveDelay);
     }
 
-    // Update BLE data characteristics
-    bleHandler->setData(pack->getData(0), pack->getSize());
-    bleHandler->setData1(pack->getData(1), pack->getSize());
-    bleHandler->setNumber(pack->getNumber());
-    bleHandler->setSize(pack->getSize());
+    while (!pack.isEmpty() && CustomServerCallbacks::isConnected()) {
+        // Update BLE data characteristics
+        ble->setDataPack0(pack.extract(0).data(), pack.getSize());
+        ble->setDataPack1(pack.extract(1).data(), pack.getSize());
+        ble->setPackageSize(pack.getSize());
 
-    // Notify about data update
-    bleHandler->bcastIndicate();
+        // Notify about data update
+        ble->broadcastIndicate();
+        delay(saveDelay);
+    }
+}
 
-    delay(1000);
+void
+setup() {
+    /** BLE setup */
+    ble = BLEServiceHandler::inst();
+    ble->setup();
+
+    /** Package setup */
+    pack = Package();
+
+    /** SPI flash setup */
+    flash = SPIFlash::inst();
+    flash->begin();
+
+    /** Init threads */
+    sensorsThread.onRun(saveData);
+    sensorsThread.setInterval(sensorDelay);
+
+    saveThread.onRun(saveData);
+    saveThread.setInterval(saveDelay);
+}
+
+void
+loop() {
+    /** Run sensor thread */
+    if (sensorsThread.shouldRun()) {
+        sensorsThread.run();
+    }
+    /** Run save thread */
+    if (saveThread.shouldRun()) {
+        saveThread.run();
+    }
 }
