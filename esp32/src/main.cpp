@@ -20,7 +20,7 @@ constexpr uint16_t sensorDelay = 1000;
 constexpr uint16_t saveDelay = 1000;
 
 void
-saveData() {
+getData() {
     /** For debug purposes we firstly use
      * to init save data as random values
     */
@@ -81,7 +81,7 @@ setup() {
     flash->begin();
 
     /** Init threads */
-    sensorsThread.onRun(saveData);
+    sensorsThread.onRun(getData);
     sensorsThread.setInterval(sensorDelay);
 
     saveThread.onRun(saveData);
