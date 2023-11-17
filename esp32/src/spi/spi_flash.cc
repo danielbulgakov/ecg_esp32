@@ -1,5 +1,10 @@
 #include <spi/spi_flash.hh>
 
+/** Define static member of class */
+SPIFlash* SPIFlash::instance        = nullptr;
+uint64_t  SPIFlash::number_to_read  = 0;
+uint64_t  SPIFlash::number          = 0;
+
 void
 SPIFlash::begin() {
     number = 0;

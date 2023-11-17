@@ -1,5 +1,8 @@
 #include <ble/ble_service_handler.hh>
 
+/** Define static member of class */
+BLEServiceHandler* BLEServiceHandler::instance = nullptr;
+
 void
 BLEServiceHandler::setup(uint64_t start_index) {
     globalPackageNumber = start_index;

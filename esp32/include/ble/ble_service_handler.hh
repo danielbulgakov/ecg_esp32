@@ -33,7 +33,4 @@ class BLEServiceHandler {
     static BLEServiceHandler* inst();
 };
 
-/** Define static member of class */
-BLEServiceHandler* BLEServiceHandler::instance = nullptr;
-
 #endif  // BLE_SERVICE_HANDLER_HH

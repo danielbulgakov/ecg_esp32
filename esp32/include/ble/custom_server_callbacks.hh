@@ -8,18 +8,18 @@ class CustomServerCallbacks : public BLEServerCallbacks {
    private:
     static bool deviceConnected;
 
-    void onConnect(BLEServer* pServer) {
+    inline void onConnect(BLEServer* pServer) {
         log_i("BLE :: Device connected");
         deviceConnected = true;
     }
 
-    void onDisconnect(BLEServer* pServer) {
+    inline void onDisconnect(BLEServer* pServer) {
         log_i("BLE :: disconnected");
         deviceConnected = false;
         reconnect(pServer);
     }
 
-    void reconnect(BLEServer* pServer) {
+    inline void reconnect(BLEServer* pServer) {
         // reconnect endlessly
         while (!deviceConnected) {
             pServer->getAdvertising()->start();
@@ -28,7 +28,9 @@ class CustomServerCallbacks : public BLEServerCallbacks {
     }
 
    public:
-    static bool isConnected() { return deviceConnected; }
+    static inline bool isConnected() { return deviceConnected; }
 };
+
+bool CustomServerCallbacks::deviceConnected = false;
 
 #endif  // CUSTOM_SERVER_CALLBACKS_HH

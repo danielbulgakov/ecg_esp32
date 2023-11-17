@@ -26,7 +26,4 @@ class SPIFlash {
     bool isEmpty() { return number_to_read - number; }
 };
 
-/** Define static member of class */
-SPIFlash* SPIFlash::instance = nullptr;
-
 #endif  // SPI_FLASH_HH
