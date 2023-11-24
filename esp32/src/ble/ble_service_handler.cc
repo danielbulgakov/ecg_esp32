@@ -7,7 +7,9 @@ void
 BLEServiceHandler::setup(uint64_t start_index) {
     globalPackageNumber = start_index;
     BLEDevice::init("ESP32");
+
     pServer = BLEDevice::createServer();
+
     BLEService* pService = pServer->createService(Config::BLE::SERVICE_UUID);
 
     BLEDescriptor dataDescriptor(BLEUUID((uint16_t)0x2902));
@@ -43,8 +45,8 @@ BLEServiceHandler::setup(uint64_t start_index) {
     pService->start();
 
     // Could be added later
-    // BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
-    // pAdvertising->addServiceUUID(SERVICE_UUID);
+    BLEAdvertising* pAdvertising = BLEDevice::getAdvertising();
+    pAdvertising->addServiceUUID(Config::BLE::SERVICE_UUID);
     // pAdvertising->setScanResponse(true);
     // pAdvertising->setMinPreferred(0x06);
     BLEDevice::startAdvertising();
@@ -97,10 +99,10 @@ BLEServiceHandler::setDataPack1(uint16_t* data, uint16_t size) {
 }
 
 BLEServiceHandler::BLEServiceHandler() {
-    pServer = nullptr;
-    pDataCharacteristic = nullptr;
-    pDataCharacteristic1 = nullptr;
-    pSizeCharacteristic = nullptr;
+    pServer                = nullptr;
+    pDataCharacteristic    = nullptr;
+    pDataCharacteristic1   = nullptr;
+    pSizeCharacteristic    = nullptr;
     pPackageCharacteristic = nullptr;
 }
 

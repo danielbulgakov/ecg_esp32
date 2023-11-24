@@ -6,7 +6,7 @@ Language: Cpp
 BasedOnStyle: Google
 AccessModifierOffset: -1
 AlignAfterOpenBracket: Align
-AlignConsecutiveAssignments: None
+AlignConsecutiveAssignments: true
 AlignOperands: Align
 AlwaysBreakAfterReturnType: TopLevel
 AllowAllArgumentsOnNextLine: true

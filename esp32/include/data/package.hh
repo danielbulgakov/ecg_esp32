@@ -10,14 +10,11 @@ class Package {
     uint64_t maxSize;
 
    public:
-    explicit Package(uint64_t size = Config::Package::MAX_DATA_SIZE)
-        : maxSize(size) {}
+    explicit Package(uint64_t size = Config::Package::MAX_DATA_SIZE);
 
-    void insert(uint16_t element, uint8_t id) { payloads[id].insert(element); };
+    void insert(uint16_t element, uint8_t channel);
 
-    std::vector<uint16_t> extract(uint8_t id) {
-        return payloads[id].extract();
-    };
+    PackageType extract(uint8_t channel);
 
     uint64_t getSize() { return maxSize; }
 

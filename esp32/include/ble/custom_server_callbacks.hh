@@ -1,8 +1,8 @@
 #ifndef CUSTOM_SERVER_CALLBACKS_HH
 #define CUSTOM_SERVER_CALLBACKS_HH
 
-#include <ble/ble_service_handler.hh>
 #include <helpers/config.hh>
+#include <ble/ble_service_handler.hh>
 
 class CustomServerCallbacks : public BLEServerCallbacks {
    private:

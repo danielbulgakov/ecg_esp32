@@ -1,13 +1,13 @@
 #include <spi/spi_flash.hh>
 
 /** Define static member of class */
-SPIFlash* SPIFlash::instance        = nullptr;
-uint64_t  SPIFlash::number_to_read  = 0;
-uint64_t  SPIFlash::number          = 0;
+SPIFlash* SPIFlash::instance      = nullptr;
+uint64_t SPIFlash::number_to_read = 0;
+uint64_t SPIFlash::number         = 0;
 
 void
 SPIFlash::begin() {
-    number = 0;
+    number         = 0;
     number_to_read = 0;
     // pins got from config file
     SPI.begin(Config::SPI::SCLK, Config::SPI::MISO, Config::SPI::MOSI,
@@ -25,7 +25,9 @@ SPIFlash::begin() {
 void
 SPIFlash::writeData(uint8_t* data0, uint8_t* data1, size_t length) {
     String filename = "/" + String(number);
-    File file = SD.open(filename, FILE_WRITE);
+
+    File file       = SD.open(filename, FILE_WRITE);
+
     if (!file) {
         log_e("SPI :: Failed to open file for writing");
         return;
@@ -48,7 +50,9 @@ SPIFlash::writeData(uint8_t* data0, uint8_t* data1, size_t length) {
 void
 SPIFlash::readData(uint8_t* buffer1, uint8_t* buffer2, size_t length) {
     String filename = "/" + String(number);
+
     File file = SD.open(filename, FILE_READ);
+
     if (!file) {
         log_e("SPI :: Failed to open file for reading");
         return;

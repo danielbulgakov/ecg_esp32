@@ -1,16 +1,25 @@
 #ifndef BUFFER_QUEUE_HH
 #define BUFFER_QUEUE_HH
 
-#include <queue>
 #include <vector>
 
 #include <helpers/config.hh>
+
+#ifdef CIRCLQUEUE
+#include "data/circular_queue.hh"
+#else
+#include <queue>
+#endif
 
 typedef std::vector<uint16_t> PackageType;
 
 class BufferQueue {
    private:
+#ifdef CIRCLQUEUE
+    circular::queue<PackageType> bufferQ;
+#else
     std::queue<PackageType> bufferQ;
+#endif
     PackageType currentPack;
     uint16_t maxSize;
 

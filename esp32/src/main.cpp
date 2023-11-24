@@ -15,9 +15,10 @@ Package pack;
  * Data saving and saveing routines
 */
 Thread sensorsThread = Thread();
-Thread saveThread = Thread();
-constexpr uint16_t sensorDelay = 1000;
-constexpr uint16_t saveDelay = 1000;
+Thread saveThread    = Thread();
+
+constexpr uint16_t sensorDelay = 100;
+constexpr uint16_t saveDelay   = 100;
 
 void
 getData() {
@@ -32,10 +33,16 @@ getData() {
 
 void
 saveData() {
-    while (!flash->isEmpty()) {
+    bool isFlashEmpty = true;
+#ifndef NO_SPI
+    isFlashEmpty = flash->isEmpty();
+#endif  // NO_SPI
+    while (!isFlashEmpty && CustomServerCallbacks::isConnected()) {
         uint8_t *buff1, *buff2;
         uint16_t size;
+#ifndef NO_SPI
         flash->readData(buff1, buff2, size);
+#endif  // NO_SPI
 
         // Update BLE data characteristics
         ble->setDataPack0(reinterpret_cast<uint16_t*>(buff1), size);
@@ -44,15 +51,14 @@ saveData() {
 
         // Notify about data update
         ble->broadcastIndicate();
-
-        delay(saveDelay);
     }
 
     while (!pack.isEmpty() && !CustomServerCallbacks::isConnected()) {
+#ifndef NO_SPI
         flash->writeData(reinterpret_cast<uint8_t*>(pack.extract(0).data()),
                          reinterpret_cast<uint8_t*>(pack.extract(1).data()),
                          pack.getSize() * 2);
-        delay(saveDelay);
+#endif  // NO_SPI
     }
 
     while (!pack.isEmpty() && CustomServerCallbacks::isConnected()) {
@@ -63,7 +69,6 @@ saveData() {
 
         // Notify about data update
         ble->broadcastIndicate();
-        delay(saveDelay);
     }
 }
 
@@ -76,9 +81,11 @@ setup() {
     /** Package setup */
     pack = Package();
 
+#ifndef NO_SPI
     /** SPI flash setup */
     flash = SPIFlash::inst();
     flash->begin();
+#endif  // NO_SPI
 
     /** Init threads */
     sensorsThread.onRun(getData);
