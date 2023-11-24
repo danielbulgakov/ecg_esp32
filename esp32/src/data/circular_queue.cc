@@ -1,7 +1,5 @@
 #include "data/circular_queue.hh"
 
-#include "data/circular_queue.hh"
-
 namespace circular {
 
 template <typename T>
