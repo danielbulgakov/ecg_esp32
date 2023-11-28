@@ -15,7 +15,6 @@ BufferQueue::insert(uint16_t element) {
     currentPack.push_back(element);
 
     if (currentPack.size() >= maxSize) {
-        log_i("BufferQueue :: Added pack");
 #ifdef MUTEX
         mtx.lock();
 #endif  // MUTEX
@@ -24,6 +23,7 @@ BufferQueue::insert(uint16_t element) {
         mtx.unlock();
 #endif  // MUTEX
         currentPack.clear();
+        log_i("BufferQueue :: Added pack");
     }
 }
 
@@ -39,6 +39,7 @@ BufferQueue::extract() {
 #ifdef MUTEX
         mtx.unlock();
 #endif  // MUTEX
+        log_i("BufferQueue :: Extracted pack");
         return p;
     }
     return p;

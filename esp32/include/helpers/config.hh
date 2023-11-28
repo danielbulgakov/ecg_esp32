@@ -5,10 +5,11 @@
 
 #define DEBUG
 #define NO_SPI
+#define NO_BLE
 
-#define MUTEX
+// #define MUTEX
 
-// #define CIRCLQUEUE
+#define CIRCLQUEUE
 // #define RESIZEABLE
 
 namespace Config {
@@ -21,7 +22,7 @@ constexpr const char* PACKAGE_UUID   = "afb5483e-36e1-4688-b7f5-ea07361b26aa";
 }  // namespace BLE
 
 namespace Package {
-constexpr int MAX_DATA_SIZE           = 20;
+constexpr int MAX_DATA_SIZE          = 20;
 constexpr size_t QUEUE_INIT_CAPACITY = 10;
 }  // namespace Package
 
