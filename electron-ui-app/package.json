@@ -4,11 +4,18 @@
   "description": "Electron ui app",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "author": "Daniil Unin",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^27.1.2"
+    "electron": "^27.1.2",
+    "vite": "^5.0.6"
+  },
+  "dependencies": {
+    "chart.js": "^4.4.1"
   }
 }
