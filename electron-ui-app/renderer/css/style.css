@@ -1,0 +1,96 @@
+/* Popup */
+.devices {
+  display: none;
+}
+
+.devices_show {
+  display: flex;
+}
+
+.devices__wrapper {
+  /* Позиционирование */
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /* Расположение элементов */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Цвет */
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.devices__content {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  height: 50%;
+  background: white;
+}
+
+.devices__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  background: gray;
+}
+
+.devices__header {
+  font-size: 18px;
+}
+
+/* Кнопка закрытия */
+.devices__close-button {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 5px;
+  transition: all 0.3s;
+}
+
+.devices__close-button:hover {
+  background-color: rgb(214, 109, 109);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.devices__close-button:active {
+  transform: scale(0.9);
+}
+
+/* Устройства */
+.devices__list {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  row-gap: 5px;
+  padding: 5px 10px;
+}
+
+.devices__list-item {
+  padding: 10px;
+}
+
+.devices__list-item:hover {
+  cursor: pointer;
+  background: rgb(146, 151, 155);
+}
+
+.devices__list-item:active {
+  cursor: pointer;
+  background: rgb(204, 209, 213);
+}
+
+/* button */
+button {
+  border: 1px solid black;
+  padding: 5px;
+  background:rgb(146, 151, 155);
+}
+
+button[disabled] {
+  background: rgb(255, 255, 255)
+}

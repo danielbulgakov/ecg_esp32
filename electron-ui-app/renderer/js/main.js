@@ -1,8 +1,7 @@
+import '../css/reset.css';
+import '../css/style.css';
+import './test';
 import Chart from 'chart.js/auto';
-
-document.addEventListener('DOMContentLoaded', function () {
-  renderChart();
-});
 
 function renderChart() {
   const ctx = document.getElementById('myChart').getContext('2d');
@@ -27,3 +26,5 @@ function renderChart() {
     },
   });
 }
+
+renderChart();

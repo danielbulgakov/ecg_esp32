@@ -2,8 +2,8 @@
 import path from 'path';
 
 export default {
+  base: './', // Указываем относительный путь, относительно index.html
   build: {
-    // outDir: path.resolve(__dirname, 'dist/renderer'), // Указываем путь к папке, где будет собран код
     emptyOutDir: true, // Очищаем outDir перед каждой сборкой
     rollupOptions: {
       input: {
