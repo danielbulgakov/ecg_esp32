@@ -94,3 +94,53 @@ button {
 button[disabled] {
   background: rgb(255, 255, 255)
 }
+
+/* container */
+body {
+  background-color: #fdebd3;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.container_start {
+  padding-top: 20px;
+}
+
+.header {
+  text-align: center;
+  font-size: 32px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 20px;
+}
+
+.button_find {
+  background-color: lightgreen;
+  padding: 10px 15px;
+  border-radius: 10px;
+}
+
+.button_find:hover {
+  background-color: rgb(112, 214, 112);
+}
+
+.button_find:active {
+  transform: scale(0.98) translateY(2px);
+}
+
+/* Chart container */
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 800px;
+  height: 500px;
+
+}

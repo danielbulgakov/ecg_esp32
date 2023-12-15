@@ -3,23 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+  <!-- Временно закомментирую -->
+  <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'"> -->
   <title>Electron App with Chart.js</title>
 </head>
 <body>
-  <h1>Web Bluetooth API</h1>
+  <div class="container container_start">
+    <h1 class="header">Web Bluetooth API</h1>
+    <div class="button-container">
+      <button id="find" class="button_find" title="Click the button for selecting device">Find Device</button>
+    </div>
+  </div>
 
-  <button id="find">Find Device</button>
   <button id="start" disabled>Read data</button>
   <button id="stop" disabled>Stop read</button>
 
   <p>Currently selected bluetooth device: <strong id="device-name"></strong></p>
-  <div id="outputX" style="margin-bottom: 20px;"></div>
+  <!-- <div id="outputX" style="margin-bottom: 20px;"></div>
   <div id="outputY" style="margin-bottom: 20px;"></div>
   <div id="outputData" style="margin-bottom: 20px;"></div>
   <div id="outputSize" style="margin-bottom: 20px;"></div>
-  <div id="outputPackage" style="margin-bottom: 20px;"></div>
-
+  <div id="outputPackage" style="margin-bottom: 20px;"></div> -->
+  <div class="container chart-container">
+    <canvas id="myChart"></canvas>
+  </div>
   <!-- Popup (device list) -->
   <div class="devices">
     <div class="devices__wrapper">
@@ -35,9 +42,6 @@
         </ul>
       </div>
     </div>
-  </div>
-  <div>
-    <canvas id="myChart"></canvas>
   </div>
   <script type="module" src="./js/main.js"></script>
 </body>
