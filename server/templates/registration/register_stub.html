@@ -1,0 +1,13 @@
+{% block content %}
+  <h1>Register</h1>
+  <form method="POST">
+    {% csrf_token %}
+    {{ register_form.as_p }}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+    <button type="submit">Register</button>
+  </form>
+{% endblock %}
