@@ -7,7 +7,8 @@ export default {
     emptyOutDir: true, // Очищаем outDir перед каждой сборкой
     rollupOptions: {
       input: {
-        main: path.resolve(__dirname, 'renderer/index.html'), // Указываем путь к вашему HTML-файлу
+        auth: path.resolve(__dirname, 'renderer/auth.html'), // Указываем путь к вашему HTML-файлу
+        main: path.resolve(__dirname, 'renderer/index.html')
       },
     },
   },

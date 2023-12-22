@@ -3,7 +3,7 @@ const path = require('path')
 
 let selectBluetoothCallback
 
-function createWindow () {
+function createWindow (page) {
   const mainWindow = new BrowserWindow({
     width: 1000,
     height: 700,
@@ -35,7 +35,7 @@ function createWindow () {
     console.log("Device selected, discovery finished");
   });
 
-  mainWindow.loadFile('dist/renderer/index.html')
+  mainWindow.loadFile(`dist/renderer/auth.html`)
 }
 
 app.whenReady().then(() => {
