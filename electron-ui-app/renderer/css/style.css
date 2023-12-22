@@ -1,0 +1,207 @@
+/* Popup */
+.devices {
+  display: none;
+}
+
+.devices_show {
+  display: flex;
+}
+
+.devices__wrapper {
+  /* Позиционирование */
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /* Расположение элементов */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Цвет */
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.devices__content {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  height: 50%;
+  background: white;
+}
+
+.devices__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  background: gray;
+}
+
+.devices__header {
+  font-size: 18px;
+}
+
+/* Кнопка закрытия */
+.devices__close-button {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 5px;
+  transition: all 0.3s;
+}
+
+.devices__close-button:hover {
+  background-color: rgb(214, 109, 109);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.devices__close-button:active {
+  transform: scale(0.9);
+}
+
+/* Устройства */
+.devices__list {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  row-gap: 5px;
+  padding: 5px 10px;
+}
+
+.devices__list-item {
+  padding: 10px;
+}
+
+.devices__list-item:hover {
+  cursor: pointer;
+  background: rgb(146, 151, 155);
+}
+
+.devices__list-item:active {
+  cursor: pointer;
+  background: rgb(204, 209, 213);
+}
+
+/* button */
+button {
+  border: 1px solid black;
+  padding: 5px;
+  background:rgb(146, 151, 155);
+}
+
+button[disabled] {
+  background: rgb(255, 255, 255)
+}
+
+/* container */
+body {
+  background-color: #fdebd3;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.container_start {
+  padding-top: 20px;
+}
+
+.header {
+  text-align: center;
+  font-size: 32px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 20px;
+}
+
+.button_find {
+  background-color: lightgreen;
+  padding: 10px 15px;
+  border-radius: 10px;
+}
+
+.button_find:hover {
+  background-color: rgb(112, 214, 112);
+}
+
+.button_find:active {
+  transform: scale(0.98) translateY(2px);
+}
+
+/* Chart container */
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 800px;
+  height: 500px;
+
+}
+
+/* Toggle switcher (Rounded switch) */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  border: 3px solid gray;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 2px;
+  background-color: gray;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  border: 3px solid green;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(22px);
+  -ms-transform: translateX(22px);
+  transform: translateX(22px);
+  background-color: green;
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}

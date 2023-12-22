@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="./css/reset.css">
+  <link rel="stylesheet" href="./css/auth.css">
+</head>
+<body>
+  <!-- Сделаем структуру страницы -->
+  <div class="login-container">
+    <div class="login-box">
+      <div class="login-box__circle circle circle_brown">
+        <img class="login-icon" src="../public/account_img.png" alt="Иконка авторизации">
+      </div>
+      <h1 class="login-box__header login-header">Авторизоваться</h1>
+      <form class="login-box__form">
+        <input class="login-box__input login-input" type="email" name="email" placeholder="Логин" required>
+        <!-- TODO: Добавить валидацию пароля: количество символов, содержать разные виды символов -->
+        <input class="login-box__input  login-input" type="password" name="password" placeholder="Пароль" required>
+        <button class="login-button" type="submit">Войти</button>
+      </form>
+    </div>  
+  </div>
+  <script type="module" src="./js/auth.js"></script>
+</body>
+</html>

@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+
+# js
+**/node_modules
