@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Временно закомментирую -->
+  <!-- Временно закомментирую, ну или не временно -->
   <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'"> -->
   <title>Electron App with Chart.js</title>
 </head>
@@ -15,8 +15,22 @@
     </div>
   </div>
 
+  <!-- Найти устройство -->
+  <!-- Для устройства должны быть параметры (нужно узнать по каким параметрам можно искать BLE устройство) -->
+  <!-- Когда мы введем нужные нам параметры, но нажимаем на кнопку - Find Device -->
+  <!-- И выбираем его из нашего списка -->
+  <!-- После этого становится доступна другую функционалость: -->
+  <!-- 1. "Активировать VPN", после чего пойдет считывание данных и отправление их -->
+  <!-- 2. "Диактивировать VPN", после этого поток данных перестанет течь -->
+  <!-- Нужно отображать статистику: количество отправленных пакетов, количество успешных, количество неудачных, время подключения, логин пользователя -->
   <button id="start" disabled>Read data</button>
   <button id="stop" disabled>Stop read</button>
+  <!-- Toggle switcher (Rounded switch) -->
+  <!-- Данная штука - замена двум кнопкам выше -->
+  <label class="switch">
+    <input type="checkbox">
+    <span class="slider round"></span>
+  </label>
 
   <p>Currently selected bluetooth device: <strong id="device-name"></strong></p>
   <!-- <div id="outputX" style="margin-bottom: 20px;"></div>

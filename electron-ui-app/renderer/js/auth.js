@@ -14,6 +14,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // Здесь вы можете отправить запрос на сервер для проверки учетных данных
     // и получения токена аутентификации.
 
+    // Отлично, fetch запросы работают
+    fetch('https://jsonplaceholder.typicode.com/todos/1')
+      .then(response => response.json())
+      .then(json => {
+        console.log(json);
+        // Для примера, просто переходим на главную страницу
+        window.location.href = 'index.html';
+      });
     // Пример:
     // fetch('https://example.com/login', {
     //   method: 'POST',
@@ -37,8 +45,5 @@ document.addEventListener('DOMContentLoaded', function () {
     // .catch(error => {
     //   console.error('Error:', error);
     // });
-
-    // Для примера, просто переходим на главную страницу
-    window.location.href = 'index.html';
   });
 });
