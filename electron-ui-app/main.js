@@ -35,7 +35,7 @@ function createWindow (page) {
     console.log("Device selected, discovery finished");
   });
 
-  mainWindow.loadFile(`dist/renderer/index.html`)
+  mainWindow.loadFile(`dist/renderer/auth.html`)
 }
 
 app.whenReady().then(() => {

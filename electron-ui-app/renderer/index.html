@@ -8,12 +8,86 @@
   <title>Electron App with Chart.js</title>
 </head>
 <body>
-  <div class="container container_start">
-    <h1 class="header">Web Bluetooth API</h1>
-    <div class="button-container">
-      <button id="find" class="button_find" title="Click the button for selecting device">Find Device</button>
+  <header class="header">
+    <div class="container header__container">
+      <button class="header__button">
+        <img class="header__icon" src="../public/menu-hamburger-white.png" alt="menu hamburger">
+      </button>
+      <h1 class="header__text">Profile</h1>
+      <button class="header__button">
+        <img class="header__icon" src="../public/exit-white.png" alt="exit from profile">
+      </button>
+    </div>
+  </header>
+  <div class="connection">
+    <div class="container connection__container">
+      <h2 class="header-section header-section__green">Connected</h2>
+      <div class="connection__box">
+        <div class="connection-box">
+          <label class="switch">
+            <!-- Чтобы не позволить подключиться до момента выбора устройства -->
+            <input type="checkbox" disabled checked>
+            <span class="slider round"></span>
+          </label>
+          <div class="connection__user-data">
+            <h3 class="connection__header">Program profile</h3>
+            <p class="connection__text">DaniilUnin2023@gmail.com</p>
+          </div>
+        </div>
+        <button class="header__button">
+          <img class="header__icon" src="../public/pencil-gray.png" alt="pencil icon">
+        </button>
+      </div>
     </div>
   </div>
+  <!-- Добавить сюда данные в нужном виде, как в примере -->
+  <div class="container chart-container" style="display: none;">
+    <canvas id="myChart"></canvas>
+  </div>
+  <div class="statistics">
+    <div class="container statistics-container">
+      <h2 class="header-section">Статистика соеднинения</h2>
+      <div class="statistics-block">
+        <div class="statistics-item">
+          <h3 class="connection__header">Всего полученных пакетов</h3>
+          <p class="connection__text">10</p>
+        </div>
+        <div class="statistics-item statistics-item_end">
+          <h3 class="connection__header">Всего отправленных пакетов</h3>
+          <p class="connection__text">10</p>
+        </div>
+      </div>
+      <div class="statistics-block">
+        <div class="statistics-item">
+          <h3 class="connection__header">Кол-во доставленных</h3>
+          <p class="connection__text header-section__green">10</p>
+        </div>
+        <div class="statistics-item statistics-item_end">
+          <h3 class="connection__header">Кол-во недоставленных</h3>
+          <p class="connection__text header-section__red">0</p>
+        </div>
+      </div>
+      <div class="statistics-block">
+        <div class="statistics-item">
+          <h3 class="connection__header">Время соеднинения</h3>
+          <p class="connection__text">0:00:30</p>
+        </div>
+        <div class="statistics-item statistics-item_end">
+          <h3 class="connection__header">Имя устройства</h3>
+          <p class="connection__text" id="device-name">ESP32-test</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container add-device-button-container">
+    <button id="find" class="add-device-button">
+      <img src="../public/plus-white.png" alt="white plus">
+    </button>
+  </div>
+
+  <!-- <div class="container container_start">
+    <button id="find" class="button_find" title="Click the button for selecting device">Find Device</button>
+  </div> -->
 
   <!-- Найти устройство -->
   <!-- Для устройства должны быть параметры (нужно узнать по каким параметрам можно искать BLE устройство) -->
@@ -23,24 +97,32 @@
   <!-- 1. "Активировать VPN", после чего пойдет считывание данных и отправление их -->
   <!-- 2. "Диактивировать VPN", после этого поток данных перестанет течь -->
   <!-- Нужно отображать статистику: количество отправленных пакетов, количество успешных, количество неудачных, время подключения, логин пользователя -->
-  <button id="start" disabled>Read data</button>
-  <button id="stop" disabled>Stop read</button>
+  <!-- <button id="start" disabled>Read data</button>
+  <button id="stop" disabled>Stop read</button> -->
   <!-- Toggle switcher (Rounded switch) -->
   <!-- Данная штука - замена двум кнопкам выше -->
-  <label class="switch">
-    <input type="checkbox">
-    <span class="slider round"></span>
-  </label>
 
-  <p>Currently selected bluetooth device: <strong id="device-name"></strong></p>
+  <!-- <p>Currently selected bluetooth device: <strong id="device-name"></strong></p> -->
   <!-- <div id="outputX" style="margin-bottom: 20px;"></div>
   <div id="outputY" style="margin-bottom: 20px;"></div>
   <div id="outputData" style="margin-bottom: 20px;"></div>
   <div id="outputSize" style="margin-bottom: 20px;"></div>
   <div id="outputPackage" style="margin-bottom: 20px;"></div> -->
-  <div class="container chart-container">
-    <canvas id="myChart"></canvas>
-  </div>
+  <!-- Popup (form devices) -->
+  <!-- <div class="devices">
+    <div class="devices__wrapper">
+      <div class="devices__content">
+        <div class="devices__header">
+          <h2 class="devices__header">Добавить устройство</h2>
+          <div class="devices__close-button">
+            <img id="closeButton" src="../public/close-button.png" alt="close button">
+          </div>
+        </div>
+        <ul class="devices__list">
+        </ul>
+      </div>
+    </div>
+  </div> -->
   <!-- Popup (device list) -->
   <div class="devices">
     <div class="devices__wrapper">
