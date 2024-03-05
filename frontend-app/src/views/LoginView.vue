@@ -5,12 +5,12 @@ import axios from 'axios';
 
 const router = useRouter();
 
-const userLogin = ref('');
-const userPassword = ref('');
+const userLogin = ref('1@1');
+const userPassword = ref('1');
 
 function handleSumbit(event) {
   console.log('Форма успешно отправлена');
-  router.push({ name: 'about', replace: true });
+  router.push({ name: 'main', replace: true });
 }
 
 
